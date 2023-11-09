@@ -23,7 +23,7 @@ function App() {
 	/* 
 		const fetchCountries = async () => {
 			try {
-			const response = await fetch('http://localhost:4000/countries');
+			const response = await fetch('api_endpoint');
 			if (response.ok) {
 				const data = await response.json();
 				setCountries(data);
@@ -61,13 +61,13 @@ function App() {
 		if (e.key === 'ArrowDown') {
 			if (selectedItemIndex < results.length - 1) {
 				if (selectedItemIndex === -1) {
-					setKeyword(results[0].name)
+					setKeyword(`${results[0].name}, ${results[0].code}`);
 					setSelectedItemIndex(0)
 				} else {
 					setSelectedItemIndex((prevIndex) =>
 						prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex
 					);
-					setKeyword(results[selectedItemIndex + 1].name)
+					setKeyword(`${results[selectedItemIndex + 1].name}, ${results[selectedItemIndex + 1].code}`);
 				}
 
 				if (suggestionListRef.current) {
@@ -85,6 +85,7 @@ function App() {
 			if (selectedItemIndex > 0) {
 				setSelectedItemIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
 				setKeyword(results[selectedItemIndex - 1].name)
+				setKeyword(`${results[selectedItemIndex - 1].name}, ${results[selectedItemIndex - 1].code}`);
 
 				if (suggestionListRef.current) {
 					const suggestionList = suggestionListRef.current as HTMLElement;
@@ -100,8 +101,8 @@ function App() {
 		} else if (e.key === 'Enter') {
 			if (selectedItemIndex >= 0) {
 				setQuery(results[selectedItemIndex].name);
-				setKeyword(results[selectedItemIndex].name);
-				setCookie('selectedQuery', results[selectedItemIndex].name, 7);
+				setKeyword(`${results[selectedItemIndex].name}, ${results[selectedItemIndex].code}`);
+				setCookie('selectedQuery', `${results[selectedItemIndex].name}, ${results[selectedItemIndex].code}`, 7);
 				console.log(`Selected: ${results[selectedItemIndex].name}, ${results[selectedItemIndex].code}`);
 			}
 			setToggleSuggestion(false);
@@ -110,9 +111,9 @@ function App() {
 
 	function handleSelectSuggestion(index: number) {
 		if (index >= 0) {
-			setKeyword(results[index].name);
+			setKeyword(`${results[index].name}, ${results[index].code}`);
 			setQuery(results[index].name);
-			setCookie('selectedQuery', results[index].name, 7);
+			setCookie('selectedQuery', `${results[index].name}, ${results[index].code}`, 7);
 			console.log(`Selected: ${results[index].name}, ${results[index].code}`);
 		}
 		setToggleSuggestion(false);
