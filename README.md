@@ -2,6 +2,9 @@
 
 This is a React project using Vite, Typescript, and Sass with BEM.
 
+## Input Action
+When you interact with the input field, it triggers an action that's followed by a friendly console log, displaying the details of the action.
+
 ## Tech Stack
 
 - React
