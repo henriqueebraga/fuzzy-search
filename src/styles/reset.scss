@@ -39,3 +39,18 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Style the vertical scrollbar track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Style the vertical scrollbar thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}

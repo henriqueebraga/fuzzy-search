@@ -1,6 +1,6 @@
-import { Country } from '../types/index'
+import { CountryType } from '../types/index'
 
-const countries: Country[] = [ 
+const countries: CountryType[] = [ 
     {name: 'Afghanistan', code: 'AF'}, 
     {name: 'Åland Islands', code: 'AX'}, 
     {name: 'Albania', code: 'AL'}, 

@@ -1,7 +1,7 @@
 import '@/styles/reset.scss'
 import { useState, useMemo, useEffect, useRef } from 'react';
 import countries from './data/countries';
-import { CountryType } from './types/index'
+import { CountryType, SearchResult } from './types/index'
 import Fuse from 'fuse.js';
 import { setCookie, getCookie, clearCookie } from './utils/common';
 import MagnifierIcon from './components/MagnifierIcon'
@@ -9,43 +9,57 @@ import styles from '@/styles/app.module.scss';
 
 function App() {
 	const [query, setQuery] = useState('');
+	/* const [countries, setCountries] = useState<CountryType[]>([]); */
 	const [keyword, setKeyword] = useState(getCookie('selectedQuery') || '');
 	const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
 	const [toggleSuggestion, setToggleSuggestion] = useState(false);
 	const suggestionListRef = useRef(null);
 
 	useEffect(() => {
+		/* fetchCountries(); */
 		setSelectedItemIndex(-1);
 	}, [query]);
 
+	/* 
+		const fetchCountries = async () => {
+			try {
+			const response = await fetch('http://localhost:4000/countries');
+			if (response.ok) {
+				const data = await response.json();
+				setCountries(data);
+			} else {
+				console.error('Failed to fetch countries');
+			}
+			} catch (error) {
+			console.error('Error fetching countries', error);
+			}
+		};
+	
+	*/
 	const fuse = useMemo(() => {
 		return new Fuse(countries, {
-
 			threshold: 0.2,
 			location: 0,
 			distance: 100,
 			includeScore: true,
 			keys: ['name', 'code'],
 		});
-	}, []);
+	}, [countries]);
 
 	const results: CountryType[] = useMemo(() => {
 		if (query) {
-			const searchResults = fuse.search(query);
+			const searchResults: SearchResult[] = fuse.search(query);
 			return searchResults
-				.sort((a, b) => a.item.score - b.item.score)
 				.map((result) => result.item);
 		} else {
 			return [];
 		}
 	}, [query, fuse]);
-	console.log('results', results);
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		setToggleSuggestion(true);
 		if (e.key === 'ArrowDown') {
 			if (selectedItemIndex < results.length - 1) {
-				// Move selection down
 				if (selectedItemIndex === -1) {
 					setKeyword(results[0].name)
 					setSelectedItemIndex(0)
@@ -54,12 +68,10 @@ function App() {
 						prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex
 					);
 					setKeyword(results[selectedItemIndex + 1].name)
-					console.log(selectedItemIndex)
 				}
 
 				if (suggestionListRef.current) {
 					const suggestionList = suggestionListRef.current as HTMLElement;
-					console.log('suggestionList', suggestionList.children);
 					const suggestionItem = suggestionList.children[selectedItemIndex + 1];
 
 					if (suggestionItem) {
@@ -76,7 +88,6 @@ function App() {
 
 				if (suggestionListRef.current) {
 					const suggestionList = suggestionListRef.current as HTMLElement;
-					console.log('suggestionList', suggestionList);
 					const suggestionItem = suggestionList.children[selectedItemIndex - 1];
 
 					if (suggestionItem) {
@@ -88,22 +99,21 @@ function App() {
 			}
 		} else if (e.key === 'Enter') {
 			if (selectedItemIndex >= 0) {
-				// e.preventDefault();
 				setQuery(results[selectedItemIndex].name);
+				setKeyword(results[selectedItemIndex].name);
 				setCookie('selectedQuery', results[selectedItemIndex].name, 7);
+				console.log(`Selected: ${results[selectedItemIndex].name}, ${results[selectedItemIndex].code}`);
 			}
 			setToggleSuggestion(false);
 		}
-		console.log(selectedItemIndex)
 	};
-	console.log('selectedItemIndex', selectedItemIndex);
 
 	function handleSelectSuggestion(index: number) {
-		console.log('index', index);
 		if (index >= 0) {
+			setKeyword(results[index].name);
 			setQuery(results[index].name);
-			console.log('results[index].name', results[index].name);
 			setCookie('selectedQuery', results[index].name, 7);
+			console.log(`Selected: ${results[index].name}, ${results[index].code}`);
 		}
 		setToggleSuggestion(false);
 	}
@@ -141,7 +151,7 @@ function App() {
 
 	return (
 		<>
-			<h1>COUNTRIES</h1>
+			<h1 className={styles['search-title']}>Where would you like to go?</h1>
 			<div
 				className={styles['search-container']}>
 				<MagnifierIcon style='search-container__icon' />

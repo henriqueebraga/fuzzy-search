@@ -1,5 +1,21 @@
+@import './variable';
+
+.search-title {
+    position: fixed;
+    top: 28%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: $font-xxl;
+    color: #18004C;
+    font-weight: 600;
+    font-family: $font-regular;
+}
+
 .search-container {
-    position: relative;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 600px;
     margin: 50px auto;
     font-family: Arial, sans-serif;
